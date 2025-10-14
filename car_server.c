@@ -204,19 +204,23 @@ void Server_Setup()
             Server_Info("ERROR Invalid size!");
         }
 
-        printf("Received msg from client: %s", buf);
+        printf("Received msg from client: %s\n", buf);
 
         // Determine who sent the datagram
-        hostp = gethostbyaddr((const char *)&clientaddr.sin_addr.s_addr, sizeof(clientaddr.sin_addr.s_addr), AF_INET);
+        hostp = gethostbyaddr((const char *)&clientaddr.sin_addr.s_addr,
+				      sizeof(clientaddr.sin_addr.s_addr),
+				      AF_INET);
 
         if (hostp == NULL)
         {
-            Server_Info("ERROR on gethostbyaddr");
+            perror("gethostbyaddr");
+            Server_Info("Couldn't determine who sent the package (error code: %d)\n", h_errno);
         }
 
         hostaddrp = inet_ntoa(clientaddr.sin_addr);
         if (hostaddrp == NULL)
         {
+            perror("inet_ntoa");
             Server_Info("ERROR on inet_ntoa\n");
         }
 
