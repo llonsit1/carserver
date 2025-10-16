@@ -11,6 +11,9 @@
 #include <arpa/inet.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include "motor.h"
+#include "Wheel.h"
+#include "movement.h"
 
 typedef enum
 {
@@ -62,88 +65,29 @@ void Server_Warning(char *msg)
     puts(msg);
 }
 
-int gArduinoSerialFd;
-
-void Server_SendDirectionalCmd(CAR_CMDS cmd)
-{
-    char *serialString;
-    switch (cmd)
-    {
-    case FORWARD:
-        serialString = ARDUINO_SERIAL_CMD_FORWARD;
-        break;
-    case BACKWARDS:
-        serialString = ARDUINO_SERIAL_CMD_BACKWARDS;
-        break;
-    case RIGHT:
-        serialString = ARDUINO_SERIAL_CMD_RIGHT;
-        break;
-    case LEFT:
-        serialString = ARDUINO_SERIAL_CMD_LEFT;
-        break;
-    default:
-        Server_Info("Command not recognized - sending '%s'\n", serialString);
-        break;
-    }
-
-    send(gArduinoSerialFd, serialString, strlen(serialString), 0);
-}
 
 void Server_HandleActions(char *action)
 {
     if (strcmp(action, "FORWARD") == 0)
     {
-        Server_SendDirectionalCmd(FORWARD);
+        Move_Forward();
+        //Server_SendDirectionalCmd(FORWARD);
     }
     else if (strcmp(action, "BACKWARDS") == 0)
     {
-        Server_SendDirectionalCmd(BACKWARDS);
+        Move_Reverse();
+        //Server_SendDirectionalCmd(BACKWARDS);
     }
     else if (strcmp(action, "RIGHT") == 0)
     {
-        Server_SendDirectionalCmd(RIGHT);
+        //Server_SendDirectionalCmd(RIGHT);
     }
     else if (strcmp(action, "LEFT") == 0)
     {
-        Server_SendDirectionalCmd(LEFT);
+        //Server_SendDirectionalCmd(LEFT);
+    } else if (strcmp(action, "STOP") == 0) {
+        Move_Stop();
     }
-}
-
-int Server_OpenPort() {
-    int fd = open(ARDUINO_DEVICE, O_RDWR | O_NOCTTY | O_NDELAY);
-    if (fd == -1)
-    {
-        sIsInfoFatal = true;
-        Server_Info("ERROR OpenPort: Unable to open %s", ARDUINO_DEVICE);
-    }
-
-    return fd;
-}
-
-void Server_SetupArduinoSerial()
-{
-    int fd;
-    struct termios tty;
-
-    // Open serial port
-
-    fd = Server_OpenPort();
-
-    // Configure port
-    tcgetattr(fd, &tty);
-    cfsetospeed(&tty, B9600);
-    cfsetispeed(&tty, B9600);
-    tty.c_cflag |= (CLOCAL | CREAD); // enable receiver, set local mode
-    tty.c_cflag &= ~CSIZE;
-    tty.c_cflag |= CS8;      // 8 bits
-    tty.c_cflag &= ~PARENB;  // no parity
-    tty.c_cflag &= ~CSTOPB;  // 1 stop bit
-    tty.c_cflag &= ~CRTSCTS; // no flow control
-    tcsetattr(fd, TCSANOW, &tty);
-
-    sleep(2); // Arduino resets when port opens
-
-    gArduinoSerialFd = fd;
 }
 
 void Server_Setup()
@@ -226,14 +170,16 @@ void Server_Setup()
 
         printf("From client with ip: %s\n", hostaddrp);
 
+        Server_HandleActions(buf);
+
         free(buf);
     }
 }
 
 void Server_Init()
 {
-
-    Server_SetupArduinoSerial();
+    Motor_SetupRPIPins();
+    Wheel_Init();
     Server_Setup();
 }
 
