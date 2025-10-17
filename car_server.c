@@ -87,6 +87,10 @@ void Server_HandleActions(char *action)
         //Server_SendDirectionalCmd(LEFT);
     } else if (strcmp(action, "STOP") == 0) {
         Move_Stop();
+    } else if (strcmp(action, "DIAGONAL_RIGHT") == 0) {
+        Move_ForwardRight();
+    } else if (strcmp(action, "ROTATE") == 0) {
+        Move_Rotate();
     }
 }
 

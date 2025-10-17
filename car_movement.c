@@ -24,3 +24,22 @@ void Move_Stop(void) {
     Wheel_Stop(WHEEL_L2);
     Wheel_Stop(WHEEL_R2);
 }
+
+void Move_Rotate(void) {
+    Wheel_MoveForward(WHEEL_L2);
+    Wheel_MoveForward(WHEEL_L1);
+    Wheel_MoveForward(WHEEL_R2);
+    Wheel_MoveForward(WHEEL_R1);
+}
+
+void Move_ForwardRight(void) {
+    Wheel_MoveForward(WHEEL_L2);
+    Wheel_MoveForward(WHEEL_R2);
+    Wheel_Stop(WHEEL_L1);
+    Wheel_Stop(WHEEL_R1);
+}
+
+void Move_ForwardLeft(void) {
+}
+
+
