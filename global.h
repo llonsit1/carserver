@@ -7,4 +7,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <termios.h>
+#include <string.h>
+#include <netdb.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <stdarg.h>
+#include <stdbool.h>
 #endif /* GLOBAL_H */

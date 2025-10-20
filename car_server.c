@@ -1,19 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <termios.h>
-#include <string.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <stdarg.h>
-#include <stdbool.h>
 #include "motor.h"
 #include "wheel.h"
 #include "movement.h"
+#include "hash.h"
 
 typedef enum
 {
@@ -32,6 +20,16 @@ typedef enum
 #define SERVER_PORT 10011
 #define MAX_BUF_SIZE 500
 
+#define HASH_FORWARD 4
+#define HASH_LEFT 97
+#define HASH_RIGHT 40
+#define HASH_REVERSE 10
+#define HASH_RIGHT_DIAGONAL 91
+#define HASH_LEFT_DIAGONAL 26
+#define HASH_REVERSE_LEFT 76
+#define HASH_REVERSE_RIGHT 82
+#define HASH_ROTATE 65
+
 static char* sCurrentError = NULL;
 static bool sIsInfoFatal = false;
 
@@ -39,7 +37,7 @@ static bool sIsInfoFatal = false;
  * @brief Server_Info - wrapper for perror
  * @note This function can abort the program..
  */
-void Server_Info(const char *format, ...) {
+static void Server_Info(const char *format, ...) {
     va_list arglist;
 
     if (sCurrentError != NULL) {
@@ -59,42 +57,50 @@ void Server_Info(const char *format, ...) {
     sCurrentError = NULL;
 }
 
-
-void Server_Warning(char *msg)
+static void Server_Warning(char *msg)
 {
     puts(msg);
 }
 
-
-void Server_HandleActions(char *action)
+static void Server_HandleCarAction(char *action)
 {
-    if (strcmp(action, "FORWARD") == 0)
-    {
-        Move_Forward();
-        //Server_SendDirectionalCmd(FORWARD);
-    }
-    else if (strcmp(action, "BACKWARDS") == 0)
-    {
-        Move_Reverse();
-        //Server_SendDirectionalCmd(BACKWARDS);
-    }
-    else if (strcmp(action, "RIGHT") == 0)
-    {
-        //Server_SendDirectionalCmd(RIGHT);
-    }
-    else if (strcmp(action, "LEFT") == 0)
-    {
-        //Server_SendDirectionalCmd(LEFT);
-    } else if (strcmp(action, "STOP") == 0) {
-        Move_Stop();
-    } else if (strcmp(action, "DIAGONAL_RIGHT") == 0) {
-        Move_ForwardRight();
-    } else if (strcmp(action, "ROTATE") == 0) {
-        Move_Rotate();
+    int code = hash(action);
+
+    switch (code) {
+        case HASH_FORWARD:
+            Move_Forward();
+            break;
+        case HASH_REVERSE:
+            Move_Reverse();
+            break;
+        case HASH_LEFT:
+            Move_Left();
+            break;
+        case HASH_RIGHT:
+            Move_Right();
+            break;
+        case HASH_RIGHT_DIAGONAL:
+            Move_ForwardRight();
+            break;
+        case HASH_LEFT_DIAGONAL:
+            Move_ForwardLeft();
+            break;
+        case HASH_REVERSE_LEFT:
+            Move_ReverseLeft();
+            break;
+        case HASH_REVERSE_RIGHT:
+            Move_ReverseRight();
+            break;
+        case HASH_ROTATE:
+            Move_Rotate();
+            break;
+        default:
+            Server_Info("Invalid command!\n ");
+            break;
     }
 }
 
-void Server_Setup()
+static void Server_Setup()
 {
     int serverSocket;              /* socket */
     int portno = SERVER_PORT;      /* port to listen on */
@@ -174,13 +180,13 @@ void Server_Setup()
 
         printf("From client with ip: %s\n", hostaddrp);
 
-        Server_HandleActions(buf);
+        Server_HandleCarAction(buf);
 
         free(buf);
     }
 }
 
-void Server_Init()
+static void Server_Init()
 {
     Motor_SetupRPIPins();
     Wheel_Init();
