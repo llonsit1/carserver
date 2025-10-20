@@ -1,6 +1,6 @@
 #include "global.h"
 #include "motor.h"
-#include "Wheel.h"
+#include "wheel.h"
 
 
 #define MOTOR_A1_ENABLE -1

@@ -1,6 +1,6 @@
 #include "global.h"
 #include "motor.h"
-#include "Wheel.h"
+#include "wheel.h"
 
 // Move the car in forward
 void Move_Forward(void) {

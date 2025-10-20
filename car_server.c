@@ -12,7 +12,7 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include "motor.h"
-#include "Wheel.h"
+#include "wheel.h"
 #include "movement.h"
 
 typedef enum
