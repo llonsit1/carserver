@@ -4,6 +4,7 @@
 #include "movement.h"
 #include "hash.h"
 #include "servo.h"
+#include "pin.h"
 
 typedef enum
 {
@@ -29,6 +30,9 @@ typedef enum
 #define HASH_SERVO_DOWN 99
 #define HASH_SERVO_STOP 66
 #define HASH_STOP 16
+#define HASH_SPEED_HIGH 105
+#define HASH_SPEED_SLOW 106
+#define HASH_SPEED_MEDIUM 54
 
 static char* sCurrentError = NULL;
 static bool sIsInfoFatal = false;
@@ -105,6 +109,15 @@ static void Server_HandleCarAction(char *action)
             break;
         case HASH_STOP:
             Move_Stop();
+            break;
+        case HASH_SPEED_HIGH:
+            Move_SetSpeedMaxium();
+            break;
+        case HASH_SPEED_MEDIUM:
+            Move_SetSpeedMedium();
+            break;
+        case HASH_SPEED_SLOW:
+            Move_SetSpeedLow();
             break;
         default:
             Server_Info("Invalid command!\n ");
@@ -200,7 +213,7 @@ static void Server_Setup()
 
 static void Server_Init()
 {
-    Motor_SetupRPIPins();
+    Pin_Init();
     Servo_Init();
     Wheel_Init();
     Server_Setup();
@@ -209,4 +222,5 @@ static void Server_Init()
 int main()
 {
     Server_Init();
+    Wheel_Destroy();
 }

@@ -3,10 +3,10 @@
 #include "wheel.h"
 
 
-#define MOTOR_A1_ENABLE -1
-#define MOTOR_B1_ENABLE -1
-#define MOTOR_A2_ENABLE -1
-#define MOTOR_B2_ENABLE -1
+#define MOTOR_A1_ENABLE 18
+#define MOTOR_B1_ENABLE 12
+#define MOTOR_A2_ENABLE 13
+#define MOTOR_B2_ENABLE 19
 
 // Motor - L1
 #define MOTOR_A1_IN1 17
@@ -41,27 +41,11 @@ void Wheel_Init(void) {
     }
   }
 
-  // Maybe?: Temporal
-  sWheels[WHEEL_R1].motor->enable = MOTOR_A1_ENABLE;
-  sWheels[WHEEL_R1].motor->input0 = MOTOR_A1_IN1;
-  sWheels[WHEEL_R1].motor->input1 = MOTOR_A1_IN2;
+  Motor_Setup(sWheels[WHEEL_R1].motor, MOTOR_A1_IN1, MOTOR_A1_IN2, MOTOR_A1_ENABLE);
+  Motor_Setup(sWheels[WHEEL_R2].motor, MOTOR_A2_IN1, MOTOR_A2_IN2, MOTOR_A2_ENABLE);
 
-  sWheels[WHEEL_R2].motor->enable = MOTOR_A2_ENABLE;
-  sWheels[WHEEL_R2].motor->input0 = MOTOR_A2_IN1;
-  sWheels[WHEEL_R2].motor->input1 = MOTOR_A2_IN2;
-
-  sWheels[WHEEL_L1].motor->enable = MOTOR_B1_ENABLE;
-  sWheels[WHEEL_L1].motor->input0 = MOTOR_B1_IN1;
-  sWheels[WHEEL_L1].motor->input1 = MOTOR_B1_IN2;
-
-  sWheels[WHEEL_L2].motor->enable = MOTOR_B2_ENABLE;
-  sWheels[WHEEL_L2].motor->input0 = MOTOR_B2_IN1;
-  sWheels[WHEEL_L2].motor->input1 = MOTOR_B2_IN2;
-
-  // Now that we initialized the Pin inputs now we can use pinMode with them
-  for (int i = 0; i < WHEEL_MAX; i++) {
-    Motor_Setup(sWheels[i].motor);
-  }
+  Motor_Setup(sWheels[WHEEL_L1].motor, MOTOR_B1_IN1, MOTOR_B1_IN2, MOTOR_B1_ENABLE);
+  Motor_Setup(sWheels[WHEEL_L2].motor, MOTOR_B2_IN1, MOTOR_B2_IN2, MOTOR_B2_ENABLE);
 }
 
 void Wheel_Destroy() {
@@ -130,6 +114,26 @@ void Wheel_Stop(WHEEL wheel) {
       break;
     case WHEEL_R2:
       Motor_Stop(sWheels[WHEEL_R2].motor);
+      break;
+    default:
+      assert(wheel);
+      break;
+  }
+}
+
+void Wheel_SetSpeed(WHEEL wheel, int speed) {
+  switch (wheel) {
+    case WHEEL_L1:
+      Motor_SetSpeed(sWheels[WHEEL_L1].motor, speed);
+      break;
+    case WHEEL_R1:
+      Motor_SetSpeed(sWheels[WHEEL_R1].motor, speed);
+      break;
+    case WHEEL_L2:
+      Motor_SetSpeed(sWheels[WHEEL_L2].motor, speed);
+      break;
+    case WHEEL_R2:
+      Motor_SetSpeed(sWheels[WHEEL_R2].motor, speed);
       break;
     default:
       assert(wheel);

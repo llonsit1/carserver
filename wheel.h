@@ -16,4 +16,6 @@ void Wheel_MoveForward(WHEEL wheel);
 void Wheel_Reverse(WHEEL wheel);
 void Wheel_Stop(WHEEL wheel);
 void Move_Reverse(void);
+void Wheel_Destroy(void);
+void Wheel_SetSpeed(WHEEL wheel, int speed);
 #endif /* WHEEL_H */

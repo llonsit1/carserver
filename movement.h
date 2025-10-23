@@ -13,4 +13,7 @@ void Move_Stop(void);
 void Move_ServoUp(void);
 void Move_ServoDown(void);
 void Move_ServoStop(void);
+void Move_SetSpeedLow(void);
+void Move_SetSpeedMedium(void);
+void Move_SetSpeedMaxium(void);
 #endif /* MOVEMENT_H */

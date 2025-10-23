@@ -35,17 +35,17 @@ void Move_Rotate(void) {
 }
 
 void Move_ForwardRight(void) {
-    Wheel_MoveForward(WHEEL_L2);
+    Wheel_Stop(WHEEL_L2);
     Wheel_MoveForward(WHEEL_R2);
-    Wheel_Stop(WHEEL_L1);
+    Wheel_MoveForward(WHEEL_L1);
     Wheel_Stop(WHEEL_R1);
 }
 
 void Move_ForwardLeft(void) {
-    Wheel_Stop(WHEEL_L2);
+    Wheel_MoveForward(WHEEL_L2);
     Wheel_Stop(WHEEL_R2);
-    Wheel_MoveForward(WHEEL_L1);
     Wheel_MoveForward(WHEEL_R1);
+    Wheel_Stop(WHEEL_L1);
 }
 
 void Move_Left(void) {
@@ -63,17 +63,17 @@ void Move_Right(void) {
 }
 
 void Move_ReverseRight(void) {
-    Wheel_Reverse(WHEEL_L2);
+    Wheel_Stop(WHEEL_L2);
     Wheel_Reverse(WHEEL_R2);
-    Wheel_Stop(WHEEL_L1);
+    Wheel_Reverse(WHEEL_L1);
     Wheel_Stop(WHEEL_R1);
 }
 
 void Move_ReverseLeft(void) {
-    Wheel_Stop(WHEEL_L2);
+    Wheel_Reverse(WHEEL_L2);
     Wheel_Stop(WHEEL_R2);
-    Wheel_Reverse(WHEEL_L1);
     Wheel_Reverse(WHEEL_R1);
+    Wheel_Stop(WHEEL_L1);
 }
 
 void Move_ServoUp(void) {
@@ -86,4 +86,25 @@ void Move_ServoDown(void) {
 
 void Move_ServoStop(void) {
     Servo_Stop();
+}
+
+void Move_SetSpeedLow(void) {
+    Wheel_SetSpeed(WHEEL_L1, 50);
+    Wheel_SetSpeed(WHEEL_L2, 50);
+    Wheel_SetSpeed(WHEEL_R2, 50);
+    Wheel_SetSpeed(WHEEL_R1, 50);
+}
+
+void Move_SetSpeedMedium(void) {
+    Wheel_SetSpeed(WHEEL_L1, 100);
+    Wheel_SetSpeed(WHEEL_L2, 100);
+    Wheel_SetSpeed(WHEEL_R2, 100);
+    Wheel_SetSpeed(WHEEL_R1, 100);
+}
+
+void Move_SetSpeedMaxium(void) {
+    Wheel_SetSpeed(WHEEL_L1, 200);
+    Wheel_SetSpeed(WHEEL_L2, 200);
+    Wheel_SetSpeed(WHEEL_R2, 200);
+    Wheel_SetSpeed(WHEEL_R1, 200);
 }
