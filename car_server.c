@@ -1,7 +1,9 @@
+#include "global.h"
 #include "motor.h"
 #include "wheel.h"
 #include "movement.h"
 #include "hash.h"
+#include "servo.h"
 
 typedef enum
 {
@@ -10,12 +12,6 @@ typedef enum
     RIGHT,
     LEFT
 } CAR_CMDS;
-
-#define ARDUINO_DEVICE "/dev/ttyACM0"
-#define ARDUINO_SERIAL_CMD_FORWARD "GO_FORWARD"
-#define ARDUINO_SERIAL_CMD_BACKWARDS "GO_BACKWARDS"
-#define ARDUINO_SERIAL_CMD_RIGHT "GO_RIGHT"
-#define ARDUINO_SERIAL_CMD_LEFT "GO_LEFT"
 
 #define SERVER_PORT 10011
 #define MAX_BUF_SIZE 500
@@ -29,6 +25,10 @@ typedef enum
 #define HASH_REVERSE_LEFT 76
 #define HASH_REVERSE_RIGHT 82
 #define HASH_ROTATE 65
+#define HASH_SERVO_UP 84
+#define HASH_SERVO_DOWN 99
+#define HASH_SERVO_STOP 66
+#define HASH_STOP 16
 
 static char* sCurrentError = NULL;
 static bool sIsInfoFatal = false;
@@ -93,6 +93,18 @@ static void Server_HandleCarAction(char *action)
             break;
         case HASH_ROTATE:
             Move_Rotate();
+            break;
+        case HASH_SERVO_UP:
+            Move_ServoUp();
+            break;
+        case HASH_SERVO_DOWN:
+            Move_ServoDown();
+            break;
+        case HASH_SERVO_STOP:
+            Move_ServoStop();
+            break;
+        case HASH_STOP:
+            Move_Stop();
             break;
         default:
             Server_Info("Invalid command!\n ");
@@ -189,6 +201,7 @@ static void Server_Setup()
 static void Server_Init()
 {
     Motor_SetupRPIPins();
+    Servo_Init();
     Wheel_Init();
     Server_Setup();
 }

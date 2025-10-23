@@ -26,7 +26,7 @@
 
 #define WHEEL_MAX 4
 
-Wheel sWheels[WHEEL_MAX];
+Wheel sWheels[WHEEL_MAX] = {NULL};
 
 /*
  * Initialize the four wheels of the car
@@ -61,6 +61,14 @@ void Wheel_Init(void) {
   // Now that we initialized the Pin inputs now we can use pinMode with them
   for (int i = 0; i < WHEEL_MAX; i++) {
     Motor_Setup(sWheels[i].motor);
+  }
+}
+
+void Wheel_Destroy() {
+  for (int i = 0; i < WHEEL_MAX; i++) {
+    if (sWheels[i].motor) {
+      free(sWheels[i].motor);
+    }
   }
 }
 

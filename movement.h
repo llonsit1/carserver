@@ -10,4 +10,7 @@ void Move_ReverseRight(void);
 void Move_Right(void);
 void Move_Rotate(void);
 void Move_Stop(void);
+void Move_ServoUp(void);
+void Move_ServoDown(void);
+void Move_ServoStop(void);
 #endif /* MOVEMENT_H */

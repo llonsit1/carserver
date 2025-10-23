@@ -39,6 +39,11 @@ static void Motor_CheckPins(void) {
 void Motor_Forward(Motor* motor) {
     Motor_CheckPins();
 
+    if (motor == NULL) {
+        puts("Motor not initialized refusing to move it forward!\n");
+        return;
+    }
+
     DEBUG_MSG("Moving motor in forward");
     digitalWrite(motor->input0, HIGH);
     digitalWrite(motor->input1, LOW);
@@ -47,12 +52,24 @@ void Motor_Forward(Motor* motor) {
 void Motor_Reverse(Motor* motor) {
     Motor_CheckPins();
 
+    if (motor == NULL) {
+        puts("Motor not initialized refusing to move it in reverse!\n");
+        return;
+    }
+
     DEBUG_MSG("Moving motor in reverse");
     digitalWrite(motor->input0, LOW);
     digitalWrite(motor->input1, HIGH);
 }
 
 void Motor_Stop(Motor* motor) {
+    Motor_CheckPins();
+
+    if (motor == NULL) {
+        puts("Motor not initialized refusing to stop it!\n");
+        return;
+    }
+
     digitalWrite(motor->input0, LOW);
     digitalWrite(motor->input1, LOW);
 }

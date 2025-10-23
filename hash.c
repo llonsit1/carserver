@@ -19,7 +19,7 @@ int hash(char* name) {
     return k % 128;
 }
 
-/*
+#ifdef TEST_HASH
 int main() {
   char buf[500];
    while (1) {
@@ -28,4 +28,5 @@ int main() {
     printf("Hash for %s is %d\n", buf, h);
   }
 }
-*/
+
+#endif
